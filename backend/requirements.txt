@@ -1,0 +1,29 @@
+# Core
+fastapi==0.115.12
+uvicorn[standard]==0.34.2
+python-dotenv==1.1.0
+python-multipart==0.0.20
+
+# Google Cloud
+google-cloud-aiplatform==1.90.0
+google-cloud-speech==2.31.1
+google-cloud-firestore==2.20.1
+google-cloud-storage==2.19.0
+
+# Document parsing
+PyPDF2==3.0.1
+
+# External APIs
+httpx==0.28.1
+aiohttp==3.11.18
+
+# Data validation
+pydantic==2.11.1
+pydantic-settings==2.9.1
+
+# Testing
+pytest==8.3.5
+pytest-asyncio==0.25.3
+
+# Utilities
+uuid6==2024.7.10

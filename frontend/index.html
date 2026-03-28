@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="TriageAI - AI-powered emergency triage system that converts unstructured inputs into structured, life-saving action plans.">
+    <title>TriageAI — Emergency Response Triage</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+    <!-- Animated background -->
+    <div class="bg-animation">
+        <div class="bg-orb bg-orb-1"></div>
+        <div class="bg-orb bg-orb-2"></div>
+        <div class="bg-orb bg-orb-3"></div>
+    </div>
+
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header" id="app-header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <div class="logo-icon">
+                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                            <path d="M16 2L20 12H30L22 18L25 28L16 22L7 28L10 18L2 12H12L16 2Z" fill="url(#logo-grad)" />
+                            <defs>
+                                <linearGradient id="logo-grad" x1="2" y1="2" x2="30" y2="28">
+                                    <stop offset="0%" stop-color="#FF6B6B"/>
+                                    <stop offset="100%" stop-color="#FFE66D"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </div>
+                    <h1 class="logo-text">TriageAI</h1>
+                    <span class="logo-badge">BETA</span>
+                </div>
+                <p class="header-tagline">AI-Powered Emergency Response Triage</p>
+            </div>
+            <div class="header-status">
+                <div class="status-dot" id="status-dot"></div>
+                <span class="status-text" id="status-text">System Ready</span>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Input Section -->
+            <section class="input-section" id="input-section">
+                <h2 class="section-title">
+                    <span class="section-icon">📡</span>
+                    Report Emergency
+                </h2>
+                <p class="section-subtitle">Provide emergency details via text, voice, or documents. AI will analyze and generate a triage report.</p>
+
+                <!-- Input Tabs -->
+                <div class="input-tabs" id="input-tabs">
+                    <button class="tab-btn active" data-tab="text" id="tab-text">
+                        <span class="tab-icon">✍️</span>
+                        Text
+                    </button>
+                    <button class="tab-btn" data-tab="voice" id="tab-voice">
+                        <span class="tab-icon">🎙️</span>
+                        Voice
+                    </button>
+                    <button class="tab-btn" data-tab="document" id="tab-document">
+                        <span class="tab-icon">📄</span>
+                        Document
+                    </button>
+                </div>
+
+                <!-- Text Input Panel -->
+                <div class="tab-panel active" id="panel-text">
+                    <div class="input-group">
+                        <label for="emergency-text" class="input-label">Emergency Description</label>
+                        <textarea 
+                            id="emergency-text" 
+                            class="text-input"
+                            rows="5"
+                            placeholder="Describe the emergency situation... e.g., 'There's been a multi-car accident on Highway 101 near the downtown exit. At least 3 cars involved, one is flipped over. I can see people trapped inside. There's smoke coming from one vehicle.'"
+                            maxlength="5000"
+                        ></textarea>
+                        <div class="char-count"><span id="char-count">0</span>/5000</div>
+                    </div>
+                </div>
+
+                <!-- Voice Input Panel -->
+                <div class="tab-panel" id="panel-voice">
+                    <div class="voice-recorder" id="voice-recorder">
+                        <div class="recorder-visual">
+                            <div class="waveform" id="waveform">
+                                <div class="wave-bar"></div><div class="wave-bar"></div>
+                                <div class="wave-bar"></div><div class="wave-bar"></div>
+                                <div class="wave-bar"></div><div class="wave-bar"></div>
+                                <div class="wave-bar"></div><div class="wave-bar"></div>
+                                <div class="wave-bar"></div><div class="wave-bar"></div>
+                                <div class="wave-bar"></div><div class="wave-bar"></div>
+                                <div class="wave-bar"></div><div class="wave-bar"></div>
+                                <div class="wave-bar"></div><div class="wave-bar"></div>
+                            </div>
+                            <div class="recorder-timer" id="recorder-timer">00:00</div>
+                        </div>
+                        <button class="record-btn" id="record-btn" aria-label="Start recording">
+                            <span class="record-icon" id="record-icon">🎙️</span>
+                            <span class="record-text" id="record-text">Start Recording</span>
+                        </button>
+                        <p class="recorder-hint">Click to start recording your emergency report</p>
+                        <div class="voice-file-info hidden" id="voice-file-info">
+                            <span class="file-icon">🎵</span>
+                            <span class="file-name" id="voice-file-name">recording.webm</span>
+                            <button class="file-remove" id="voice-file-remove" aria-label="Remove recording">✕</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Document Input Panel -->
+                <div class="tab-panel" id="panel-document">
+                    <div class="file-drop-zone" id="file-drop-zone">
+                        <div class="drop-icon">📄</div>
+                        <p class="drop-text">Drag & drop a PDF here</p>
+                        <p class="drop-hint">or click to browse (max 10MB)</p>
+                        <input type="file" id="document-input" accept=".pdf" class="file-input-hidden" aria-label="Upload PDF document">
+                    </div>
+                    <div class="file-info hidden" id="doc-file-info">
+                        <span class="file-icon">📄</span>
+                        <span class="file-name" id="doc-file-name">document.pdf</span>
+                        <span class="file-size" id="doc-file-size">0 KB</span>
+                        <button class="file-remove" id="doc-file-remove" aria-label="Remove document">✕</button>
+                    </div>
+                </div>
+
+                <!-- Location Input (always visible) -->
+                <div class="input-group location-group">
+                    <label for="location-input" class="input-label">📍 Location (optional)</label>
+                    <input 
+                        type="text" 
+                        id="location-input" 
+                        class="location-input"
+                        placeholder="e.g., Mumbai, India or 123 Main Street, New York"
+                    >
+                </div>
+
+                <!-- Submit Button -->
+                <button class="analyze-btn" id="analyze-btn">
+                    <span class="analyze-btn-text">⚡ Analyze Emergency</span>
+                    <div class="analyze-spinner hidden" id="analyze-spinner">
+                        <div class="spinner"></div>
+                        <span>Processing...</span>
+                    </div>
+                </button>
+            </section>
+
+            <!-- Results Section -->
+            <section class="results-section hidden" id="results-section">
+                <div class="results-header">
+                    <h2 class="section-title">
+                        <span class="section-icon">🏥</span>
+                        Triage Report
+                    </h2>
+                    <div class="processing-time" id="processing-time"></div>
+                </div>
+
+                <!-- Severity Banner -->
+                <div class="severity-banner" id="severity-banner">
+                    <div class="severity-score-container">
+                        <div class="severity-score" id="severity-score">3</div>
+                        <div class="severity-label" id="severity-label">SERIOUS</div>
+                    </div>
+                    <div class="severity-justification" id="severity-justification"></div>
+                </div>
+
+                <!-- Report Cards Grid -->
+                <div class="report-grid">
+                    <!-- Summary Card -->
+                    <div class="report-card summary-card" id="summary-card">
+                        <h3 class="card-title">📋 Incident Summary</h3>
+                        <div class="card-body">
+                            <div class="incident-type-badge" id="incident-type"></div>
+                            <p class="summary-text" id="summary-text"></p>
+                        </div>
+                    </div>
+
+                    <!-- Extracted Details Card -->
+                    <div class="report-card details-card" id="details-card">
+                        <h3 class="card-title">🔍 Extracted Details</h3>
+                        <div class="card-body">
+                            <div class="detail-row">
+                                <span class="detail-label">Location</span>
+                                <span class="detail-value" id="detail-location">—</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">People Affected</span>
+                                <span class="detail-value" id="detail-affected">—</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Caller State</span>
+                                <span class="detail-value" id="detail-caller-state">—</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Injuries</span>
+                                <div class="detail-tags" id="detail-injuries"></div>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Hazards</span>
+                                <div class="detail-tags" id="detail-hazards"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Immediate Actions Card -->
+                    <div class="report-card actions-card" id="actions-card">
+                        <h3 class="card-title">🚨 Immediate Actions</h3>
+                        <div class="card-body">
+                            <ol class="actions-list" id="actions-list"></ol>
+                        </div>
+                    </div>
+
+                    <!-- Resources Card -->
+                    <div class="report-card resources-card" id="resources-card">
+                        <h3 class="card-title">🚑 Resources Needed</h3>
+                        <div class="card-body">
+                            <div class="resources-grid" id="resources-grid"></div>
+                            <div class="specialized-resources" id="specialized-resources"></div>
+                        </div>
+                    </div>
+
+                    <!-- Weather Context Card -->
+                    <div class="report-card weather-card hidden" id="weather-card">
+                        <h3 class="card-title">🌤️ Weather Context</h3>
+                        <div class="card-body" id="weather-body"></div>
+                    </div>
+
+                    <!-- News Context Card -->
+                    <div class="report-card news-card hidden" id="news-card">
+                        <h3 class="card-title">📰 Related News</h3>
+                        <div class="card-body" id="news-body"></div>
+                    </div>
+
+                    <!-- Recommended Facility Card -->
+                    <div class="report-card facility-card" id="facility-card">
+                        <h3 class="card-title">🏥 Recommended Facility</h3>
+                        <div class="card-body">
+                            <div class="facility-type" id="facility-type"></div>
+                            <p class="facility-reason" id="facility-reason"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Input Sources -->
+                <div class="input-sources" id="input-sources">
+                    <span class="sources-label">Input Sources:</span>
+                    <div class="sources-badges" id="sources-badges"></div>
+                    <span class="confidence-label">Confidence:</span>
+                    <div class="confidence-bar">
+                        <div class="confidence-fill" id="confidence-fill"></div>
+                    </div>
+                    <span class="confidence-value" id="confidence-value">70%</span>
+                </div>
+
+                <!-- New Report Button -->
+                <button class="new-report-btn" id="new-report-btn">
+                    📡 New Emergency Report
+                </button>
+            </section>
+
+            <!-- Error Section -->
+            <div class="error-banner hidden" id="error-banner">
+                <span class="error-icon">⚠️</span>
+                <span class="error-message" id="error-message"></span>
+                <button class="error-close" id="error-close" aria-label="Close error">✕</button>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <p>⚠️ <strong>Disclaimer:</strong> TriageAI is an AI assistant. All outputs are recommendations for trained emergency dispatchers. Final decisions must be made by qualified professionals.</p>
+            <p class="footer-tech">Powered by Google Gemini AI • Vertex AI • Cloud Speech-to-Text</p>
+        </footer>
+    </div>
+
+    <script src="/static/js/recorder.js"></script>
+    <script src="/static/js/fileHandler.js"></script>
+    <script src="/static/js/api.js"></script>
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
