@@ -1,0 +1,13 @@
+venv/
+.env
+.env.example
+.git/
+.gitignore
+__pycache__/
+*.pyc
+*.pyo
+tests/
+*.md
+implementation_plan.md
+cloudbuild.yaml
+.gemini/
