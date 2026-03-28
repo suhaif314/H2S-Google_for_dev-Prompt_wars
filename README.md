@@ -258,13 +258,15 @@ python -m pytest tests/test_input_validation.py -v
 
 | Aspect | Implementation |
 |---|---|
-| **API Key Protection** | All keys stored in `.env`, never committed to git |
-| **Input Sanitization** | Text sanitized for null bytes, excessive whitespace |
-| **File Validation** | Strict type + size checks for audio and PDF uploads |
-| **Rate Limiting** | Can be added via FastAPI middleware for production |
-| **CORS** | Configured for allowed origins |
+| **API Key Protection** | All keys stored in `.env`, excluded from git via `.gitignore` |
+| **Input Sanitization** | Null byte removal, whitespace normalization, length truncation |
+| **File Validation** | Strict MIME type + file size checks for audio and PDF uploads |
+| **Rate Limiting** | IP-based rate limiting middleware (10 req/min on `/api/triage`) |
+| **Security Headers** | CSP, X-Frame-Options, X-Content-Type-Options, XSS-Protection |
+| **CORS** | Environment-aware origin restriction (open in dev, locked in prod) |
+| **Request Tracing** | Unique X-Request-ID header for observability |
 | **AI Safety** | Disclaimer that AI outputs are recommendations only |
-| **Responsible AI** | Never provides medical diagnosis — triage-level only |
+| **Responsible AI** | Never provides medical diagnosis — triage-level assessment only |
 
 ---
 
@@ -283,13 +285,13 @@ python -m pytest tests/test_input_validation.py -v
 
 | Criterion | How TriageAI Satisfies It |
 |---|---|
-| **Code Quality** | Clean architecture, Pydantic models, typed Python, modular services |
-| **Security** | Input sanitization, file validation, API key protection |
+| **Code Quality** | Clean architecture, Pydantic models, typed Python, modular services, no dead code |
+| **Security** | Security headers (CSP/XSS/CORS), rate limiting, input sanitization, file validation |
 | **Efficiency** | Gemini 2.5 Flash, async I/O, lazy init, structured JSON mode |
-| **Testing** | Pytest suite covering validators, API endpoints, edge cases |
-| **Accessibility** | Semantic HTML, ARIA labels, keyboard navigation, responsive |
-| **Google Services** | 6+ GCP services deeply integrated |
-| **Real-world Usability** | Directly applicable to emergency dispatch |
+| **Testing** | 40+ pytest cases covering validators, models, API endpoints, edge cases |
+| **Accessibility** | ARIA roles/tablist, skip-nav, focus-visible, prefers-reduced-motion, live regions |
+| **Google Services** | Vertex AI Gemini, Cloud Speech-to-Text, Cloud Run, Google Maps API |
+| **Real-world Usability** | Directly applicable to emergency dispatch workflows |
 | **Context-aware AI** | Weather + news enrichment for holistic assessment |
 | **Decision Making** | Severity scoring, resource allocation, facility routing |
 

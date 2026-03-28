@@ -36,3 +36,10 @@ uploads/
 
 # Logs
 *.log
+
+# Scratch/temporary files
+implementation_plan.md
+test_apis.py
+tests/quick_test.py
+tests/test_incident_report.pdf
+.pytest_cache/

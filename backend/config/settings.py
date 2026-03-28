@@ -1,6 +1,9 @@
-"""TriageAI Configuration Settings."""
+"""TriageAI Configuration Settings.
 
-import os
+Centralized configuration using pydantic-settings.
+All values can be overridden via environment variables or .env file.
+"""
+
 from pydantic_settings import BaseSettings
 from typing import Optional
 

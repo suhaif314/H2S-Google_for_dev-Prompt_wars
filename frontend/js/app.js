@@ -31,11 +31,29 @@ document.addEventListener('DOMContentLoaded', () => {
         tab.addEventListener('click', () => {
             const targetPanel = tab.dataset.tab;
 
-            tabs.forEach(t => t.classList.remove('active'));
+            // Update ARIA + classes
+            tabs.forEach(t => {
+                t.classList.remove('active');
+                t.setAttribute('aria-selected', 'false');
+            });
             panels.forEach(p => p.classList.remove('active'));
 
             tab.classList.add('active');
+            tab.setAttribute('aria-selected', 'true');
             document.getElementById(`panel-${targetPanel}`).classList.add('active');
+        });
+
+        // Arrow key navigation between tabs
+        tab.addEventListener('keydown', (e) => {
+            const tabArray = Array.from(tabs);
+            const idx = tabArray.indexOf(tab);
+            let newIdx = idx;
+            if (e.key === 'ArrowRight') newIdx = (idx + 1) % tabArray.length;
+            else if (e.key === 'ArrowLeft') newIdx = (idx - 1 + tabArray.length) % tabArray.length;
+            else return;
+            e.preventDefault();
+            tabArray[newIdx].click();
+            tabArray[newIdx].focus();
         });
     });
 

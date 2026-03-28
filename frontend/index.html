@@ -11,8 +11,11 @@
     <link rel="stylesheet" href="/static/css/styles.css">
 </head>
 <body>
+    <!-- Skip Navigation for Accessibility -->
+    <a href="#input-section" class="skip-nav" id="skip-nav">Skip to main content</a>
+
     <!-- Animated background -->
-    <div class="bg-animation">
+    <div class="bg-animation" aria-hidden="true">
         <div class="bg-orb bg-orb-1"></div>
         <div class="bg-orb bg-orb-2"></div>
         <div class="bg-orb bg-orb-3"></div>
@@ -50,29 +53,29 @@
             <!-- Input Section -->
             <section class="input-section" id="input-section">
                 <h2 class="section-title">
-                    <span class="section-icon">📡</span>
+                    <span class="section-icon" aria-hidden="true">📡</span>
                     Report Emergency
                 </h2>
-                <p class="section-subtitle">Provide emergency details via text, voice, or documents. AI will analyze and generate a triage report.</p>
+                <p class="section-subtitle" id="input-description">Provide emergency details via text, voice, or documents. AI will analyze and generate a triage report.</p>
 
                 <!-- Input Tabs -->
-                <div class="input-tabs" id="input-tabs">
-                    <button class="tab-btn active" data-tab="text" id="tab-text">
-                        <span class="tab-icon">✍️</span>
+                <div class="input-tabs" id="input-tabs" role="tablist" aria-label="Input method selection">
+                    <button class="tab-btn active" data-tab="text" id="tab-text" role="tab" aria-selected="true" aria-controls="panel-text">
+                        <span class="tab-icon" aria-hidden="true">✍️</span>
                         Text
                     </button>
-                    <button class="tab-btn" data-tab="voice" id="tab-voice">
-                        <span class="tab-icon">🎙️</span>
+                    <button class="tab-btn" data-tab="voice" id="tab-voice" role="tab" aria-selected="false" aria-controls="panel-voice">
+                        <span class="tab-icon" aria-hidden="true">🎙️</span>
                         Voice
                     </button>
-                    <button class="tab-btn" data-tab="document" id="tab-document">
-                        <span class="tab-icon">📄</span>
+                    <button class="tab-btn" data-tab="document" id="tab-document" role="tab" aria-selected="false" aria-controls="panel-document">
+                        <span class="tab-icon" aria-hidden="true">📄</span>
                         Document
                     </button>
                 </div>
 
                 <!-- Text Input Panel -->
-                <div class="tab-panel active" id="panel-text">
+                <div class="tab-panel active" id="panel-text" role="tabpanel" aria-labelledby="tab-text">
                     <div class="input-group">
                         <label for="emergency-text" class="input-label">Emergency Description</label>
                         <textarea 
@@ -87,7 +90,7 @@
                 </div>
 
                 <!-- Voice Input Panel -->
-                <div class="tab-panel" id="panel-voice">
+                <div class="tab-panel" id="panel-voice" role="tabpanel" aria-labelledby="tab-voice">
                     <div class="voice-recorder" id="voice-recorder">
                         <div class="recorder-visual">
                             <div class="waveform" id="waveform">
@@ -116,7 +119,7 @@
                 </div>
 
                 <!-- Document Input Panel -->
-                <div class="tab-panel" id="panel-document">
+                <div class="tab-panel" id="panel-document" role="tabpanel" aria-labelledby="tab-document">
                     <div class="file-drop-zone" id="file-drop-zone">
                         <div class="drop-icon">📄</div>
                         <p class="drop-text">Drag & drop a PDF here</p>
@@ -143,17 +146,17 @@
                 </div>
 
                 <!-- Submit Button -->
-                <button class="analyze-btn" id="analyze-btn">
+                <button class="analyze-btn" id="analyze-btn" aria-describedby="input-description">
                     <span class="analyze-btn-text">⚡ Analyze Emergency</span>
-                    <div class="analyze-spinner hidden" id="analyze-spinner">
-                        <div class="spinner"></div>
+                    <div class="analyze-spinner hidden" id="analyze-spinner" role="status">
+                        <div class="spinner" aria-hidden="true"></div>
                         <span>Processing...</span>
                     </div>
                 </button>
             </section>
 
             <!-- Results Section -->
-            <section class="results-section hidden" id="results-section">
+            <section class="results-section hidden" id="results-section" aria-live="polite" aria-atomic="true">
                 <div class="results-header">
                     <h2 class="section-title">
                         <span class="section-icon">🏥</span>
@@ -266,7 +269,7 @@
             </section>
 
             <!-- Error Section -->
-            <div class="error-banner hidden" id="error-banner">
+            <div class="error-banner hidden" id="error-banner" role="alert" aria-live="assertive">
                 <span class="error-icon">⚠️</span>
                 <span class="error-message" id="error-message"></span>
                 <button class="error-close" id="error-close" aria-label="Close error">✕</button>

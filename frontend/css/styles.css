@@ -67,6 +67,39 @@ body {
     line-height: 1.6;
 }
 
+/* --- Skip Navigation (Accessibility) --- */
+.skip-nav {
+    position: absolute;
+    top: -100%;
+    left: 0;
+    background: var(--gradient-main);
+    color: #1a1a2e;
+    padding: 12px 24px;
+    font-weight: 700;
+    z-index: 1000;
+    transition: top 0.3s;
+    text-decoration: none;
+    border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+}
+.skip-nav:focus {
+    top: 0;
+}
+
+/* Focus-visible for keyboard navigation */
+*:focus-visible {
+    outline: 2px solid var(--accent-blue);
+    outline-offset: 2px;
+}
+
+/* Respect user's reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
 /* --- Background Animation --- */
 .bg-animation {
     position: fixed;

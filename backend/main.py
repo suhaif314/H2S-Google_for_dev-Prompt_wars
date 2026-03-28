@@ -12,11 +12,12 @@ import uuid
 import logging
 from datetime import datetime, timezone
 from typing import Optional
+from collections import defaultdict
 
-from fastapi import FastAPI, UploadFile, File, Form, HTTPException
+from fastapi import FastAPI, UploadFile, File, Form, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
 
 from backend.config.settings import settings
 from backend.utils.logger import setup_logging
@@ -43,21 +44,83 @@ app = FastAPI(
     title="TriageAI",
     description="Emergency & Disaster Response Triage System powered by Google Gemini AI",
     version="1.0.0",
+    docs_url="/api/docs",
+    redoc_url="/api/redoc",
 )
 
-# CORS middleware
+# CORS — restrict origins based on environment
+allowed_origins = settings.cors_origins if settings.app_env == "production" else ["*"]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allow all for development
+    allow_origins=allowed_origins,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST"],
+    allow_headers=["Content-Type", "Authorization"],
 )
+
+
+# --- Security Headers Middleware ---
+@app.middleware("http")
+async def security_headers_middleware(request: Request, call_next):
+    """Attach standard security headers to every response."""
+    response = await call_next(request)
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["X-XSS-Protection"] = "1; mode=block"
+    response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+    response.headers["Permissions-Policy"] = "microphone=(self), camera=()"
+    response.headers["Content-Security-Policy"] = (
+        "default-src 'self'; "
+        "script-src 'self'; "
+        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
+        "font-src 'self' https://fonts.gstatic.com; "
+        "img-src 'self' data:; "
+        "connect-src 'self'"
+    )
+    return response
+
+
+# --- Rate Limiting Middleware ---
+_rate_limit_store: dict[str, list[float]] = defaultdict(list)
+_RATE_LIMIT_MAX = 10   # requests
+_RATE_LIMIT_WINDOW = 60  # seconds
+
+
+@app.middleware("http")
+async def rate_limit_middleware(request: Request, call_next):
+    """IP-based rate limiting on the triage endpoint."""
+    if request.url.path == "/api/triage":
+        client_ip = request.client.host if request.client else "unknown"
+        now = time.time()
+        _rate_limit_store[client_ip] = [
+            ts for ts in _rate_limit_store[client_ip]
+            if now - ts < _RATE_LIMIT_WINDOW
+        ]
+        if len(_rate_limit_store[client_ip]) >= _RATE_LIMIT_MAX:
+            logger.warning(f"Rate limit exceeded for {client_ip}")
+            return JSONResponse(
+                status_code=429,
+                content={"detail": "Rate limit exceeded. Please wait before submitting again."},
+            )
+        _rate_limit_store[client_ip].append(now)
+    return await call_next(request)
+
+
+# --- Request Tracing Middleware ---
+@app.middleware("http")
+async def request_id_middleware(request: Request, call_next):
+    """Attach a unique request ID for observability."""
+    request_id = str(uuid.uuid4())[:8]
+    request.state.request_id = request_id
+    response = await call_next(request)
+    response.headers["X-Request-ID"] = request_id
+    return response
+
 
 # Serve frontend static files
 app.mount("/static", StaticFiles(directory="frontend"), name="static")
 
-# In-memory report storage (would be Firestore in production)
+# In-memory report storage (would use Cloud Firestore in production)
 reports_store: dict[str, dict] = {}
 
 
